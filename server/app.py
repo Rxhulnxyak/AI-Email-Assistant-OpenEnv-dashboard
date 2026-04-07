@@ -4,6 +4,7 @@ from server.env import AIEmailEnv
 import uvicorn
 import os
 import gradio as gr
+from typing import Optional
 from server.dashboard import build_ui
 
 app = FastAPI(title="AI Email Assistant OpenEnv")
@@ -14,9 +15,9 @@ def read_root():
     return {"message": "AI Email Assistant OpenEnv API is running. Tag: openenv"}
 
 @app.post("/reset")
-def reset(request: ResetRequest):
+def reset(request: Optional[ResetRequest] = None):
     try:
-        task_id = request.task_id
+        task_id = request.task_id if request else "beginner"
         obs = env.reset(task_id)
         return {"observation": obs, "info": {}}
     except ValueError as e:
@@ -36,8 +37,13 @@ def step(action: Action):
 def state():
     return env.state()
 
-# Mount Gradio Dashboard to Root
-app = gr.mount_gradio_app(app, build_ui(), path="/")
+# Mount Gradio Dashboard
+app = gr.mount_gradio_app(app, build_ui(), path="/dashboard")
+
+@app.get("/")
+def redirect_to_dashboard():
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="/dashboard")
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 7860))
