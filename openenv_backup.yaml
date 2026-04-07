@@ -1,7 +1,7 @@
 name: ai-email-assistant
 version: 1.0.0
 description: "A high-fidelity email management environment for AI agents."
-entrypoint: "python server/app.py"
+entrypoint: "python app.py"
 task_ids:
   - beginner
   - intermediate

@@ -3,7 +3,7 @@ import json
 import requests
 import argparse
 from typing import List, Dict
-from models import Action, ListEmailsAction, ReadEmailAction, CallToolAction, DraftReplyAction, SendReplyAction
+from server.models import Action, ListEmailsAction, ReadEmailAction, CallToolAction, DraftReplyAction, SendReplyAction
 
 # Simple Logic for Beginner Task: Categorization
 def run_beginner(env_url):

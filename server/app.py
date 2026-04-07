@@ -1,10 +1,10 @@
 from fastapi import FastAPI, HTTPException
-from models import Action, ResetRequest
-from env import AIEmailEnv
+from server.models import Action, ResetRequest
+from server.env import AIEmailEnv
 import uvicorn
 import os
 import gradio as gr
-from dashboard import build_ui
+from server.dashboard import build_ui
 
 app = FastAPI(title="AI Email Assistant OpenEnv")
 env = AIEmailEnv()

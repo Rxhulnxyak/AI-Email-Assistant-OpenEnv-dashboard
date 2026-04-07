@@ -1,0 +1,20 @@
+[project]
+name = "ai-email-assistant"
+version = "1.0.0"
+description = "A high-fidelity email management environment for AI agents."
+authors = [{ name = "Rxhulnxyak" }]
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "requests",
+    "openai",
+    "pytest",
+    "gradio",
+    "pandas",
+    "python-multipart",
+    "pyyaml"
+]
+
+[tool.setuptools]
+packages = ["server"]
