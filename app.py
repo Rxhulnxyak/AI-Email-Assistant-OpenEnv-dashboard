@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from models import Action
+from models import Action, ResetRequest
 from env import AIEmailEnv
 import uvicorn
 import os
@@ -14,10 +14,11 @@ def read_root():
     return {"message": "AI Email Assistant OpenEnv API is running. Tag: openenv"}
 
 @app.post("/reset")
-def reset(task_id: str = "beginner"):
+def reset(request: ResetRequest):
     try:
+        task_id = request.task_id
         obs = env.reset(task_id)
-        return obs
+        return {"observation": obs, "info": {}}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 

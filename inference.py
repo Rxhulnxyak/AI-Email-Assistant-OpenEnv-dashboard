@@ -8,8 +8,10 @@ from models import Action, ListEmailsAction, ReadEmailAction, CallToolAction, Dr
 # Simple Logic for Beginner Task: Categorization
 def run_beginner(env_url):
     # Reset Environment
-    response = requests.post(f"{env_url}/reset?task_id=beginner")
-    observation = response.json()
+    payload = {"task_id": "beginner"}
+    response = requests.post(f"{env_url}/reset", json=payload)
+    result = response.json()
+    observation = result["observation"]
     print(f"Goal: {observation['message']}")
     
     emails = observation['emails']
@@ -17,7 +19,7 @@ def run_beginner(env_url):
     for email in emails:
         # Action: Read Email
         payload = {"action_type": "ReadEmail", "action_data": {"email_id": email['id']}}
-        requests.post(f"{env_url}/step", json=payload)
+        response = requests.post(f"{env_url}/step", json=payload).json()
         
         # Action: Move based on domain
         target = "Internal" if "@example.com" in email['sender'] else "External"
@@ -34,7 +36,8 @@ def run_inference(task_id, env_url):
         return run_beginner(env_url)
     else:
         # Minimal reset for other tasks as baseline
-        response = requests.post(f"{env_url}/reset?task_id={task_id}")
+        payload = {"task_id": task_id}
+        response = requests.post(f"{env_url}/reset", json=payload)
         print(f"Reset response: {response.status_code}")
         return 0.0
 

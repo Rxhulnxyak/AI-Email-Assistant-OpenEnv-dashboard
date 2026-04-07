@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict, Union
+from typing import List, Optional, Dict, Union, Any
 from pydantic import BaseModel, Field
 
 class EmailHeader(BaseModel):
@@ -66,6 +66,10 @@ class CalendarAction(BaseModel):
 class ReadAttachmentAction(BaseModel):
     email_id: str
     filename: str
+
+class ResetRequest(BaseModel):
+    task_id: str = "beginner"
+    options: Optional[Dict[str, Any]] = None
 
 class Action(BaseModel):
     action_type: str
