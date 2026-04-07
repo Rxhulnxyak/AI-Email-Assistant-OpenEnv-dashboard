@@ -2,44 +2,41 @@ import os
 import json
 import requests
 import argparse
-from typing import List, Dict
-from server.models import Action, ListEmailsAction, ReadEmailAction, CallToolAction, DraftReplyAction, SendReplyAction
 
-# Simple Logic for Beginner Task: Categorization
+# Standalone Inference Script (No local imports for maximum portal compatibility)
+
 def run_beginner(env_url):
     # Reset Environment
     payload = {"task_id": "beginner"}
+    print(f"Triggering reset on {env_url}/reset...")
     response = requests.post(f"{env_url}/reset", json=payload)
-    result = response.json()
-    observation = result["observation"]
-    print(f"Goal: {observation['message']}")
     
-    emails = observation['emails']
+    if response.status_code != 200:
+        print(f"Reset failed with status {response.status_code}: {response.text}")
+        return 0.0
+
+    result = response.json()
+    # Handle both wrapped and unwrapped observations
+    observation = result.get("observation", result)
+    print(f"Goal: {observation.get('message', 'No message')}")
+    
+    emails = observation.get('emails', [])
     last_reward = 0.0
-    for email in emails:
-        # Action: Read Email
-        payload = {"action_type": "ReadEmail", "action_data": {"email_id": email['id']}}
-        response = requests.post(f"{env_url}/step", json=payload).json()
+    
+    # Simple logic: Categorize first 2 emails
+    for email in emails[:2]:
+        email_id = email.get('id')
+        # Action: Read
+        requests.post(f"{env_url}/step", json={"action_type": "ReadEmail", "action_data": {"email_id": email_id}})
         
-        # Action: Move based on domain
-        target = "Internal" if "@example.com" in email['sender'] else "External"
-        payload = {"action_type": "MoveEmail", "action_data": {"email_id": email['id'], "target_folder": target}}
-        response = requests.post(f"{env_url}/step", json=payload).json()
-        last_reward = response['reward']
+        # Action: Move
+        target = "Internal" if "@example.com" in email.get('sender', '') else "External"
+        step_payload = {"action_type": "MoveEmail", "action_data": {"email_id": email_id, "target_folder": target}}
+        step_resp = requests.post(f"{env_url}/step", json=step_payload).json()
+        last_reward = step_resp.get('reward', 0.0)
         
     print(f"Final Reward: {last_reward}")
     return last_reward
-
-def run_inference(task_id, env_url):
-    print(f"--- Running Inference for Task: {task_id} on {env_url} ---")
-    if task_id == "beginner":
-        return run_beginner(env_url)
-    else:
-        # Minimal reset for other tasks as baseline
-        payload = {"task_id": task_id}
-        response = requests.post(f"{env_url}/reset", json=payload)
-        print(f"Reset response: {response.status_code}")
-        return 0.0
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -47,9 +44,11 @@ if __name__ == "__main__":
     parser.add_argument("--env_url", type=str, default="http://localhost:7860")
     args = parser.parse_args()
 
-    # If env_url is provided by portal without http, add it
     url = args.env_url
     if not url.startswith("http"):
         url = f"http://{url}"
-
-    run_inference(args.task_id, url)
+        
+    try:
+        run_beginner(url)
+    except Exception as e:
+        print(f"Inference error: {e}")

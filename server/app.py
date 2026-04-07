@@ -4,7 +4,7 @@ from server.env import AIEmailEnv
 import uvicorn
 import os
 import gradio as gr
-from typing import Optional
+from typing import Optional, Any
 from server.dashboard import build_ui
 
 app = FastAPI(title="AI Email Assistant OpenEnv")
@@ -19,23 +19,27 @@ def reset(request: Optional[ResetRequest] = None):
     try:
         task_id = request.task_id if request else "beginner"
         obs = env.reset(task_id)
-        return {"observation": obs, "info": {}}
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        # Return plain dict for maximum compatibility
+        return {"observation": obs.model_dump(), "info": {}}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/step")
 def step(action: Action):
-    obs, reward, done, info = env.step(action)
-    return {
-        "observation": obs,
-        "reward": reward,
-        "done": done,
-        "info": info
-    }
+    try:
+        obs, reward, done, info = env.step(action)
+        return {
+            "observation": obs.model_dump(),
+            "reward": reward,
+            "done": done,
+            "info": info
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/state")
 def state():
-    return env.state()
+    return env.state().model_dump()
 
 # Mount Gradio Dashboard
 app = gr.mount_gradio_app(app, build_ui(), path="/dashboard")

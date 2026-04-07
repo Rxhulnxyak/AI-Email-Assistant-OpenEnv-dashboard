@@ -2,18 +2,18 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Copy requirements from root and install
+# Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project (including 'server/' package)
+# Copy all code (includes server/ directory)
 COPY . .
 
-# Set PYTHONPATH to the root /app so 'import server.models' works
+# Set PYTHONPATH to root so 'from server.models' works
 ENV PYTHONPATH=/app
 
-# Expose port 7860 for HF Spaces
+# Expose port 7860
 EXPOSE 7860
 
-# CMD to run the FastAPI app located in the server subdirectory
-CMD ["python", "server/app.py"]
+# CMD to start the server using uvicorn (industry standard for stability)
+CMD ["uvicorn", "server.app:app", "--host", "0.0.0.0", "--port", "7860"]
