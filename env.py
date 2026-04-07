@@ -2,8 +2,8 @@ import json
 import os
 import uuid
 from typing import Tuple, Dict, Any, List
-from server.models import Action, EmailObservation, Reward, ToolOutput, ListEmailsAction, ReadEmailAction, SearchEmailsAction, CallToolAction, DraftReplyAction, SendReplyAction
-from server.mock_system import MockSystem
+from models import Action, EmailObservation, Reward, ToolOutput, ListEmailsAction, ReadEmailAction, SearchEmailsAction, CallToolAction, DraftReplyAction, SendReplyAction
+from mock_system import MockSystem
 
 class OpenEnv:
     """Base class for OpenEnv interface"""
@@ -32,7 +32,7 @@ class AIEmailEnv(OpenEnv):
             os.makedirs("logs")
 
     def reset(self, task_id: str = "beginner") -> EmailObservation:
-        from server.tasks import TASKS
+        from tasks import TASKS
         self.system = MockSystem() # Clear previous state
         self.step_count = 0
         self.reward_history = []

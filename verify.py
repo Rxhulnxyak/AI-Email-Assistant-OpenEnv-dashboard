@@ -2,7 +2,7 @@ import requests
 import json
 import sys
 from pydantic import ValidationError
-from server.models import EmailObservation, Action
+from models import EmailObservation, Action
 
 # Configuration
 API_URL = "http://localhost:7860"
