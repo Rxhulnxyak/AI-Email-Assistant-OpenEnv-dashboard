@@ -1,5 +1,5 @@
-from env import AIEmailEnv
-from models import Action, ListEmailsAction, MoveEmailAction, ReadEmailAction
+from server.env import AIEmailEnv
+from server.models import Action, ListEmailsAction, MoveEmailAction, ReadEmailAction
 import json
 
 def run_demo():

@@ -1,6 +1,6 @@
 import json
-from env import AIEmailEnv
-from models import (
+from server.env import AIEmailEnv
+from server.models import (
     Action, ListEmailsAction, ReadEmailAction, MoveEmailAction, 
     CallToolAction, DraftReplyAction, SendReplyAction, CalendarAction
 )

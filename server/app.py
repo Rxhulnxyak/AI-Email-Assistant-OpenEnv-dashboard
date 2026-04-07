@@ -1,11 +1,11 @@
 from fastapi import FastAPI, HTTPException
-from models import Action, ResetRequest
-from env import AIEmailEnv
+from server.models import Action, ResetRequest
+from server.env import AIEmailEnv
 import uvicorn
 import os
 import gradio as gr
 from typing import Optional, Any
-from dashboard import build_ui
+from server.dashboard import build_ui
 
 app = FastAPI(title="AI Email Assistant OpenEnv")
 env = AIEmailEnv()
@@ -54,6 +54,9 @@ def redirect_to_dashboard():
     from fastapi.responses import RedirectResponse
     return RedirectResponse(url="/dashboard")
 
-if __name__ == "__main__":
+def main():
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
+
+if __name__ == "__main__":
+    main()

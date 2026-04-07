@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from typing import List, Dict, Optional
-from models import EmailDetail, EmailHeader, ToolOutput
+from server.models import EmailDetail, EmailHeader, ToolOutput
 
 class MockSystem:
     def __init__(self):

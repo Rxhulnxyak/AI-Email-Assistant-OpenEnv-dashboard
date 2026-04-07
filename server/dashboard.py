@@ -1,6 +1,6 @@
 import gradio as gr
-from env import AIEmailEnv
-from models import Action, ListEmailsAction, ReadEmailAction, MoveEmailAction, CallToolAction, DraftReplyAction, SendReplyAction, CalendarAction, ReadAttachmentAction
+from server.env import AIEmailEnv
+from server.models import Action, ListEmailsAction, ReadEmailAction, MoveEmailAction, CallToolAction, DraftReplyAction, SendReplyAction, CalendarAction, ReadAttachmentAction
 import json
 import pandas as pd
 

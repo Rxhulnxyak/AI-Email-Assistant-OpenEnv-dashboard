@@ -1,5 +1,5 @@
 from typing import Dict, Any, Callable
-from mock_system import MockSystem
+from server.mock_system import MockSystem
 
 def beginner_grader(system: MockSystem) -> float:
     total_emails = len(system.emails)
