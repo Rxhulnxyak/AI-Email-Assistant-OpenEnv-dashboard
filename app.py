@@ -19,8 +19,12 @@ def reset(request: Optional[ResetRequest] = None):
     try:
         task_id = request.task_id if request else "beginner"
         obs = env.reset(task_id)
-        # Return plain dict for maximum compatibility
-        return {"observation": obs.model_dump(), "info": {}}
+        # Return plain dict with both 'observation' and 'status' for universal compatibility
+        return {
+            "status": "reset successful",
+            "observation": obs.model_dump(), 
+            "info": {}
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -29,6 +33,7 @@ def step(action: Action):
     try:
         obs, reward, done, info = env.step(action)
         return {
+            "status": "success",
             "observation": obs.model_dump(),
             "reward": reward,
             "done": done,

@@ -6,14 +6,14 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy all code (Now all in the root)
+# Copy all code
 COPY . .
 
-# Set PYTHONPATH to root /app
+# Set PYTHONPATH
 ENV PYTHONPATH=/app
 
-# Expose port 8000 (Mandatory for Scaler Portal)
+# Expose port 8000
 EXPOSE 8000
 
-# CMD to start the server from the root directory
-CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD to start the server using uvicorn (Standard FastAPI)
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
