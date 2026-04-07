@@ -7,3 +7,5 @@ pytest
 python-multipart
 gradio
 pandas
+pyyaml
+openenv-core

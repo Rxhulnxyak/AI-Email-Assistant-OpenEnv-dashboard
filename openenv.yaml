@@ -1,7 +1,7 @@
 name: ai-email-assistant
 version: 1.0.0
 description: "A high-fidelity email management environment for AI agents."
-entrypoint: "uvicorn server.app:app --host 0.0.0.0 --port 7860"
+entrypoint: "uvicorn server.server:app --host 0.0.0.0 --port 8000"
 task_ids:
   - beginner
   - intermediate
@@ -12,4 +12,3 @@ tags:
   - openenv
   - email-assistant
   - business-simulation
-# Observation and Action space are inferred from the API by the validator
