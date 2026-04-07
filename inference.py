@@ -1,66 +1,52 @@
 import os
 import json
 import requests
+import argparse
 from typing import List, Dict
 from models import Action, ListEmailsAction, ReadEmailAction, CallToolAction, DraftReplyAction, SendReplyAction
 
-# Configuration
-API_URL = "http://localhost:7860"
-HF_TOKEN = os.getenv("HF_TOKEN", "your_token_here")
-MODEL = "gpt-4o-mini" # Or any HF model
-
-class Agent:
-    def __init__(self, task_id="beginner"):
-        self.task_id = task_id
-        self.observation = self._reset()
-        self.steps = 0
-
-    def _reset(self):
-        response = requests.post(f"{API_URL}/reset?task_id={self.task_id}")
-        return response.json()
-
-    def _step(self, action_type, action_data):
-        payload = {
-            "action_type": action_type,
-            "action_data": action_data
-        }
-        response = requests.post(f"{API_URL}/step", json=payload)
-        return response.json()
-
-    def run(self):
-        print(f"--- Running Task: {self.task_id} ---")
-        print(f"Goal: {self.observation['message']}")
+# Simple Logic for Beginner Task: Categorization
+def run_beginner(env_url):
+    # Reset Environment
+    response = requests.post(f"{env_url}/reset?task_id=beginner")
+    observation = response.json()
+    print(f"Goal: {observation['message']}")
+    
+    emails = observation['emails']
+    last_reward = 0.0
+    for email in emails:
+        # Action: Read Email
+        payload = {"action_type": "ReadEmail", "action_data": {"email_id": email['id']}}
+        requests.post(f"{env_url}/step", json=payload)
         
-        # Simple Logic for Beginner Task: Categorization
-        # In a real baseline, this would be an LLM call.
-        # Here we simulate the LLM's multi-step decision process.
+        # Action: Move based on domain
+        target = "Internal" if "@example.com" in email['sender'] else "External"
+        payload = {"action_type": "MoveEmail", "action_data": {"email_id": email['id'], "target_folder": target}}
+        response = requests.post(f"{env_url}/step", json=payload).json()
+        last_reward = response['reward']
         
-        emails = self.observation['emails']
-        for email in emails:
-            print(f"Processing Email: {email['subject']} from {email['sender']}")
-            
-            # Action: Read Email
-            print(f"Action: Reading email {email['id']}")
-            result = self._step("ReadEmail", {"email_id": email['id']})
-            
-            # Action: Move based on domain
-            sender = email['sender']
-            target = "Internal" if "@example.com" in sender else "External"
-            print(f"Action: Moving to folder {target}")
-            
-            # OpenEnv move action (Simulated via a move tool if needed, 
-            # currently we'll just implement the move logic in the system)
-            # For this hackathon, we'll assume the agent calls a move action.
-            # (Adding MoveEmail to models if not there)
-            self._step("CallTool", {"tool_name": "move_email", "args": {"email_id": email['id'], "target": target}})
+    print(f"Final Reward: {last_reward}")
+    return last_reward
 
-        # Final State
-        state = requests.get(f"{API_URL}/state").json()
-        print(f"\nFinal Reward: {result['reward']}")
-        print(f"Score: {result['reward'] * 100}%")
+def run_inference(task_id, env_url):
+    print(f"--- Running Inference for Task: {task_id} on {env_url} ---")
+    if task_id == "beginner":
+        return run_beginner(env_url)
+    else:
+        # Minimal reset for other tasks as baseline
+        response = requests.post(f"{env_url}/reset?task_id={task_id}")
+        print(f"Reset response: {response.status_code}")
+        return 0.0
 
 if __name__ == "__main__":
-    # Start the server in a separate process or assume it is running
-    print("Pre-requisite: Ensure 'python app.py' is running.")
-    agent = Agent("beginner")
-    agent.run()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--task_id", type=str, default="beginner")
+    parser.add_argument("--env_url", type=str, default="http://localhost:7860")
+    args = parser.parse_args()
+
+    # If env_url is provided by portal without http, add it
+    url = args.env_url
+    if not url.startswith("http"):
+        url = f"http://{url}"
+
+    run_inference(args.task_id, url)

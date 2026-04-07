@@ -1,6 +1,13 @@
 name: ai-email-assistant
 version: 1.0.0
 description: "A high-fidelity email management environment for AI agents."
+entrypoint: "python app.py"
+task_ids:
+  - beginner
+  - intermediate
+  - advanced
+  - crisis
+  - scheduler
 tasks:
   - id: beginner
     name: Corporate Triage
@@ -11,9 +18,15 @@ tasks:
   - id: advanced
     name: Strategic Retention
     difficulty: hard
+  - id: crisis
+    name: Expert: Crisis Management
+    difficulty: expert
+  - id: scheduler
+    name: Expert: Meeting Scheduler
+    difficulty: expert
 action_space:
   type: dict
-  description: "Discriminated union of email actions (List, Read, Search, CallTool, Draft, Send)."
+  description: "Discriminated union of email actions (List, Read, Search, CallTool, Draft, Send, Calendar, ReadAttachment)."
 observation_space:
   type: dict
   description: "Object containing emails, current_email, tool_output, and reward."
