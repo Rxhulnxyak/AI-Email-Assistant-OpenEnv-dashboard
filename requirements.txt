@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+requests
+openai
+pytest
+python-multipart
+gradio
+pandas
