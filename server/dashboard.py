@@ -46,10 +46,61 @@ class Dashboard:
         except Exception as e:
             return self._get_mailbox_df(), f"Error: {e}", 0.0, "Error"
 
+custom_css = """
+body, .gradio-container {
+    background: linear-gradient(135deg, #2E0B5B 0%, #0F0826 100%) !important;
+    font-family: 'Inter', sans-serif !important;
+    color: #ffffff !important;
+}
+.contain {
+    background: transparent !important;
+}
+div[class*="panel"], div[class*="gr-box"], .gr-form, .gr-block {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+}
+button, .primary, .secondary {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: bold !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4) !important;
+}
+button:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6) !important;
+    background: linear-gradient(135deg, #FF8E53 0%, #FF6B6B 100%) !important;
+}
+input, textarea, select {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #00FFCC !important;
+    border-radius: 12px !important;
+}
+table, th, td {
+    background: transparent !important;
+    border-bottom: 1px inset rgba(255, 255, 255, 0.1) !important;
+    color: #A8E6CF !important;
+}
+h1, h2, h3, h4, p, label, .gr-form > label > span {
+    color: #E2D1F9 !important;
+    font-weight: 600 !important;
+    text-shadow: 0px 2px 4px rgba(0,0,0,0.5) !important;
+}
+"""
+
 def build_ui():
     dash = Dashboard()
     
-    with gr.Blocks(title="AI Email Assistant OpenEnv dashboard") as demo:
+    with gr.Blocks(title="AI Email Assistant OpenEnv dashboard", css=custom_css, theme=gr.themes.Default(primary_hue="purple", secondary_hue="indigo")) as demo:
         gr.Markdown("# 📧 AI Email Assistant OpenEnv dashboard")
         gr.Markdown("Visualizing the agent environment for the Meta OpenEnv Hackathon Finale.")
         
