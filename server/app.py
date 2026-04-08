@@ -9,18 +9,15 @@ from server.models import Action, EmailObservation
 from server.env import AIEmailEnv
 from server.dashboard import build_ui
 
-# IMPORTANT FIX FOR HACKATHON PHASE 2:
-# We must use `create_fastapi_app` from openenv-core! 
-# If we try to write our own custom FastAPI routes, the Scaler Validator 
-# cannot find the /info or /schema endpoints it needs to scrape the "3 tasks with graders"!
+#
 
 base_app = create_fastapi_app(
-    env=AIEmailEnv(),
+    env=AIEmailEnv,
     action_cls=Action,
     observation_cls=EmailObservation
 )
 
-# Seamlessly mount the gorgeous Glassmorphism dashboard on top of the compliant API!
+
 app = gr.mount_gradio_app(base_app, build_ui(), path="/dashboard")
 
 @app.get("/")
