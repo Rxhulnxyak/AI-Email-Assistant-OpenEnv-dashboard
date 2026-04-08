@@ -1,12 +1,5 @@
----
-title: AI Email Assistant OpenEnv
-emoji: 📧
-colorFrom: gray
-colorTo: purple
-sdk: docker
-app_port: 8000
----
-# AI Email Assistant OpenEnv (Hackathon Round 2)
+
+# AI Email Assistant OpenEnv (Hackathon )
 
 
 ![OpenEnv](https://img.shields.io/badge/OpenEnv-Compatible-blue)
